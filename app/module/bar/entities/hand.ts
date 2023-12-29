@@ -19,6 +19,14 @@ interface FinalPoker {
   order?: number;
 }
 
+const ORDER_MAP = {
+  [ActionType.START_HAND]: 1,
+  [ActionType.FIRST_PICK]: 2,
+  [ActionType.SECOND_PICK]: 3,
+  [ActionType.THIRD_PICK]: 4,
+  [ActionType.FOURTH_PICK]: 5,
+};
+
 interface FinalResultPlayer {
   playerInfo: PlayerInfo;
   top: FinalPoker[];
@@ -86,9 +94,10 @@ export class Hand {
   }
 
   private pushFinalResult(finalResultPlayer: FinalResultPlayer, action: Action) {
-    finalResultPlayer.top.push(...action.pick.filter(_ => _.position === 'top').map(_ => ({ poker: _.poker })));
-    finalResultPlayer.middle.push(...action.pick.filter(_ => _.position === 'middle').map(_ => ({ poker: _.poker })));
-    finalResultPlayer.bottom.push(...action.pick.filter(_ => _.position === 'bottom').map(_ => ({ poker: _.poker })));
+    const order: number | undefined = ORDER_MAP[action.type];
+    finalResultPlayer.top.push(...action.pick.filter(_ => _.position === 'top').map(_ => ({ poker: _.poker, order })));
+    finalResultPlayer.middle.push(...action.pick.filter(_ => _.position === 'middle').map(_ => ({ poker: _.poker, order })));
+    finalResultPlayer.bottom.push(...action.pick.filter(_ => _.position === 'bottom').map(_ => ({ poker: _.poker, order })));
     finalResultPlayer.fold.push(...action.fold);
   }
 
